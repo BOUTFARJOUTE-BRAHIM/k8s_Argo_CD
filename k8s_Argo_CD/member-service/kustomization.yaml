@@ -1,5 +1,8 @@
 resources:
 - deployment.yaml
+- service.yaml
+- member-service-configmap.yaml
+- member-service-secret.yaml
 images:
 - name: brahimbtf/member-service
   newTag: "1.0"

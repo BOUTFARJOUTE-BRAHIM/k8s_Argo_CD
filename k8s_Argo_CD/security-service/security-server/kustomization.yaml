@@ -1,5 +1,8 @@
 resources:
 - deployment.yaml
+- service.yaml
+- sec-secret.yaml
+- security-configmap.yaml
 images:
 - name: brahimbtf/security-service
   newTag: "1.1"

@@ -1,12 +1,12 @@
 apiVersion: argocd-image-updater.argoproj.io/v1alpha1
 kind: ImageUpdater
 metadata:
-  name: production-updater
+  name: payment-service-updater
   namespace: argocd
 spec:
   namespace: argocd
   applicationRefs:
-    - namePattern: "app-*"
+    - namePattern: "app-payment-service"
       images:
         - alias: "pay-service"
           imageName: "brahimbtf/pay-service:1.x"
@@ -18,6 +18,6 @@ spec:
   writeBackConfig:
     method: "git:secret:argocd/git-creds"
     gitConfig:
-      repository: "https://github.com/BOUTFARJOUTE-BRAHIM/k8s.git"
+      repository: "https://github.com/BOUTFARJOUTE-BRAHIM/k8s_Argo_CD.git"
       branch: "main"
-      writeBackTarget: "kustomization:./pyment-server"
+      writeBackTarget: "kustomization:."

@@ -1,12 +1,12 @@
 apiVersion: argocd-image-updater.argoproj.io/v1alpha1
 kind: ImageUpdater
 metadata:
-  name: production-updater
+  name: frontend-service-updater
   namespace: argocd
 spec:
   namespace: argocd
   applicationRefs:
-    - namePattern: "app-*"
+    - namePattern: "app-frontend"
       images:
         - alias: "frontend-bus"
           imageName: "brahimbtf/frontend-bus:1.x"
@@ -18,6 +18,6 @@ spec:
   writeBackConfig:
     method: "git:secret:argocd/git-creds"
     gitConfig:
-      repository: "https://github.com/BOUTFARJOUTE-BRAHIM/devsecops.git"
+      repository: "https://github.com/BOUTFARJOUTE-BRAHIM/k8s_Argo_CD.git"
       branch: "main"
-      writeBackTarget: "kustomization:./frontend"
+      writeBackTarget: "kustomization:."

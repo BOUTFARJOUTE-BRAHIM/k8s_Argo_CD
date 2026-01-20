@@ -1,5 +1,8 @@
 resources:
 - deployment.yaml
+- pay-configMap.yaml
+- pay-secret.yaml
+- service.yaml
 images:
 - name: brahimbtf/pay-service
   newTag: "1.0"

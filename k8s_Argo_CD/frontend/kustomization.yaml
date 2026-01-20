@@ -2,3 +2,4 @@ resources:
 - deployment.yaml
 images:
 - name: brahimbtf/frontend-bus
+  newTag: "1.0"

@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: payment-service
-          image: brahimbtf/pay-service:1.0
+          image: brahimbtf/pay-service
           ports:
             - containerPort: 8083
           envFrom:

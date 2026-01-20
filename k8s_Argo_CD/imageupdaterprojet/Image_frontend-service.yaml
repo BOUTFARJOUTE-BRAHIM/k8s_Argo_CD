@@ -1,0 +1,23 @@
+apiVersion: argocd-image-updater.argoproj.io/v1alpha1
+kind: ImageUpdater
+metadata:
+  name: production-updater
+  namespace: argocd
+spec:
+  namespace: argocd
+  applicationRefs:
+    - namePattern: "app-*"
+      images:
+        - alias: "frontend-bus"
+          imageName: "brahimbtf/frontend-bus:1.x"
+          commonUpdateSettings:
+            allowTags: "regexp:^1\\.[0-9]+$"
+            updateStrategy: "semver"
+            forceUpdate: true
+
+  writeBackConfig:
+    method: "git:secret:argocd/git-creds"
+    gitConfig:
+      repository: "https://github.com/BOUTFARJOUTE-BRAHIM/devsecops.git"
+      branch: "main"
+      writeBackTarget: "kustomization:./frontend"

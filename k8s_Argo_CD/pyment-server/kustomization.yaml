@@ -2,3 +2,4 @@ resources:
 - deployment.yaml
 images:
 - name: brahimbtf/pay-service
+  newTag: "1.0"

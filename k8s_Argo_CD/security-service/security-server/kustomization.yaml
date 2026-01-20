@@ -2,3 +2,4 @@ resources:
 - deployment.yaml
 images:
 - name: brahimbtf/security-service
+  newTag: "1.1"

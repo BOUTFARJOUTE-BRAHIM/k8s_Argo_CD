@@ -1,5 +1,8 @@
 resources:
 - deployment.yaml
+- service.yaml
+- exp-server-configmap.yaml
+- exp-server-secret.yaml
 images:
 - name: brahimbtf/expedition-service
   newTag: "1.0"

@@ -1,0 +1,284 @@
+apiVersion: v1
+data:
+  00_createDBs.sql: |-
+    CREATE DATABASE "expeditionDB";
+    CREATE DATABASE "memberDB";
+    CREATE DATABASE "paymentDB";
+    CREATE DATABASE "securityDB";
+  01_expeditionDB.sql: |
+    -- ============================
+    -- expeditionDB Initialization
+    -- ============================
+
+    \connect "expeditionDB";
+
+    -- ============================
+    -- Cities
+    -- ============================
+    CREATE TABLE cities (
+                            id SERIAL PRIMARY KEY,
+                            name VARCHAR(255) NOT NULL UNIQUE
+    );
+
+    -- ============================
+    -- Expeditions
+    -- ============================
+    CREATE TABLE expeditions (
+                                 id SERIAL PRIMARY KEY,
+
+                                 departure_city_id INTEGER NOT NULL,
+                                 arrival_city_id   INTEGER NOT NULL,
+
+                                 date_and_time TIMESTAMPTZ NOT NULL,
+                                 price NUMERIC(10,2) NOT NULL,
+                                 duration INTEGER,
+                                 capacity INTEGER NOT NULL,
+                                 number_of_booked_seats INTEGER NOT NULL,
+                                 profit NUMERIC(10,2) NOT NULL,
+
+                                 company_id INTEGER NOT NULL,
+
+                                 CONSTRAINT fk_expedition_departure_city
+                                     FOREIGN KEY (departure_city_id)
+                                         REFERENCES cities(id)
+                                         ON DELETE RESTRICT,
+
+                                 CONSTRAINT fk_expedition_arrival_city
+                                     FOREIGN KEY (arrival_city_id)
+                                         REFERENCES cities(id)
+                                         ON DELETE RESTRICT
+    );
+
+    -- ============================
+    -- Seats
+    -- ============================
+    CREATE TABLE seats (
+                           id SERIAL PRIMARY KEY,
+
+                           expedition_id INTEGER NOT NULL,
+                           seat_no INTEGER NOT NULL,
+                           customer_id INTEGER,
+                           status VARCHAR(50) NOT NULL,
+
+                           CONSTRAINT fk_seat_expedition
+                               FOREIGN KEY (expedition_id)
+                                   REFERENCES expeditions(id)
+                                   ON DELETE CASCADE,
+
+                           CONSTRAINT uq_seat_per_expedition
+                               UNIQUE (expedition_id, seat_no)
+    );
+
+    -- ============================
+    -- Tickets
+    -- ============================
+    CREATE TABLE tickets (
+                             pnr VARCHAR(50) PRIMARY KEY,
+
+                             seat_id INTEGER NOT NULL,
+                             payment_id INTEGER NOT NULL,
+                             customer_id INTEGER NOT NULL,
+                             created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+
+                             CONSTRAINT fk_ticket_seat
+                                 FOREIGN KEY (seat_id)
+                                     REFERENCES seats(id)
+                                     ON DELETE CASCADE
+    );
+  02_memberDB.sql: |
+    -- ============================
+    -- memberDB Initialization
+    -- ============================
+    \connect "memberDB";
+    -- admins, companies, customers, favorites
+
+
+    -- ============================
+    -- Admins
+    -- ============================
+    CREATE TABLE admins
+    (
+        id           SERIAL PRIMARY KEY,
+
+        name         VARCHAR(150) NOT NULL,
+        surname      VARCHAR(50)  NOT NULL,
+        email        VARCHAR(100) NOT NULL UNIQUE,
+        password     TEXT         NOT NULL,
+
+        ref_admin_id INTEGER,
+
+        created_at   TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
+        updated_at   TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
+
+        CONSTRAINT fk_admin_ref_admin
+            FOREIGN KEY (ref_admin_id)
+                REFERENCES admins (id)
+                ON DELETE SET NULL
+    );
+
+    -- ============================
+    -- Companies
+    -- ============================
+    CREATE TABLE companies
+    (
+        id           SERIAL PRIMARY KEY,
+
+        title        VARCHAR(150) NOT NULL,
+        email        VARCHAR(100) NOT NULL UNIQUE,
+        password     TEXT         NOT NULL,
+
+        is_verified  BOOLEAN      NOT NULL DEFAULT FALSE,
+
+        ref_admin_id INTEGER,
+
+        created_at   TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
+        updated_at   TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
+        verified_at  TIMESTAMPTZ,
+
+        CONSTRAINT fk_company_admin
+            FOREIGN KEY (ref_admin_id)
+                REFERENCES admins (id)
+                ON DELETE SET NULL
+    );
+
+    -- ============================
+    -- Customers
+    -- ============================
+    CREATE TABLE customers
+    (
+        id         SERIAL PRIMARY KEY,
+
+        name       VARCHAR(150) NOT NULL,
+        surname    VARCHAR(50)  NOT NULL,
+        gender     VARCHAR(20)  NOT NULL,
+
+        email      VARCHAR(100) NOT NULL UNIQUE,
+        password   TEXT         NOT NULL,
+
+        created_at TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ  NOT NULL DEFAULT NOW()
+    );
+
+    -- ============================
+    -- Favorite Companies
+    -- ============================
+    CREATE TABLE favorite_companies
+    (
+        id          SERIAL PRIMARY KEY,
+
+        customer_id INTEGER NOT NULL,
+        company_id  INTEGER NOT NULL,
+
+        CONSTRAINT fk_favorite_customer
+            FOREIGN KEY (customer_id)
+                REFERENCES customers (id)
+                ON DELETE CASCADE,
+
+        CONSTRAINT fk_favorite_company
+            FOREIGN KEY (company_id)
+                REFERENCES companies (id)
+                ON DELETE CASCADE,
+
+        CONSTRAINT uq_customer_company_favorite
+            UNIQUE (customer_id, company_id)
+    );
+  03_paymentDB.sql: |
+    -- =========================
+    -- paymentDB Initialization
+    -- =========================
+    \connect "paymentDB";
+
+    CREATE TABLE cards
+    (
+        id              SERIAL PRIMARY KEY,
+
+        card_no         VARCHAR(16)  NOT NULL,
+        expiration_date VARCHAR(5)   NOT NULL,
+        cvc             VARCHAR(3)   NOT NULL,
+
+        name            VARCHAR(100) NOT NULL,
+        surname         VARCHAR(100) NOT NULL,
+
+        customer_id     INTEGER      NOT NULL,
+
+        is_active       BOOLEAN      NOT NULL DEFAULT TRUE
+    );
+
+    CREATE TABLE payments
+    (
+        id      SERIAL PRIMARY KEY,
+
+        card_id INTEGER        NOT NULL,
+        amount  NUMERIC(10, 2) NOT NULL CHECK (amount >= 0),
+        date    TIMESTAMP      NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+        CONSTRAINT fk_payments_card
+            FOREIGN KEY (card_id)
+                REFERENCES cards (id)
+                ON DELETE RESTRICT
+                ON UPDATE CASCADE
+    );
+  04_securityDB.sql: |
+    -- =========================
+    -- securityDB Initialization
+    -- =========================
+
+    \connect "securityDB";
+
+    -- =========================
+    -- admin_sessions
+    -- =========================
+    CREATE TABLE admin_sessions
+    (
+        id         SERIAL PRIMARY KEY,
+        admin_id   INT         NOT NULL,
+        code       VARCHAR(64) NOT NULL UNIQUE,
+        created_at TIMESTAMP   NOT NULL,
+        expires_at TIMESTAMP   NOT NULL
+    );
+
+    CREATE INDEX idx_admin_sessions_admin_id
+        ON admin_sessions (admin_id);
+
+    CREATE INDEX idx_admin_sessions_expires_at
+        ON admin_sessions (expires_at);
+
+    -- =========================
+    -- company_sessions
+    -- =========================
+    CREATE TABLE company_sessions
+    (
+        id         SERIAL PRIMARY KEY,
+        company_id INT         NOT NULL,
+        code       VARCHAR(64) NOT NULL UNIQUE,
+        created_at TIMESTAMP   NOT NULL,
+        expires_at TIMESTAMP   NOT NULL
+    );
+
+    CREATE INDEX idx_company_sessions_company_id
+        ON company_sessions (company_id);
+
+    CREATE INDEX idx_company_sessions_expires_at
+        ON company_sessions (expires_at);
+
+    -- =========================
+    -- customer_sessions
+    -- =========================
+    CREATE TABLE customer_sessions
+    (
+        id          SERIAL PRIMARY KEY,
+        customer_id INT         NOT NULL,
+        code        VARCHAR(64) NOT NULL UNIQUE,
+        created_at  TIMESTAMP   NOT NULL,
+        expires_at  TIMESTAMP   NOT NULL
+    );
+
+    CREATE INDEX idx_customer_sessions_customer_id
+        ON customer_sessions (customer_id);
+
+    CREATE INDEX idx_customer_sessions_expires_at
+        ON customer_sessions (expires_at);
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: postgres-init

@@ -1,0 +1,19 @@
+kubectl apply --server-side -f \
+https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.3.0/standard-install.yaml
+
+
+
+kubectl apply -f https://raw.githubusercontent.com/nginx/nginx-gateway-fabric/v2.0.1/deploy/crds.yaml
+
+
+
+
+
+kubectl apply -f https://raw.githubusercontent.com/nginx/nginx-gateway-fabric/v2.0.1/deploy/default/deploy.yaml
+
+
+
+
+kubectl get crd | grep nginx
+kubectl get pods -n nginx-gateway
+kubectl get gatewayclass

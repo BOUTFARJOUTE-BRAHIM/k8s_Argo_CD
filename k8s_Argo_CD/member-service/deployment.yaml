@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: member-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: member-service
+  template:
+    metadata:
+      labels:
+        app: member-service
+    spec:
+      containers:
+        - name: member-service
+          image: brahimbtf/member-service:1.0
+          ports:
+            - containerPort: 8081
+          envFrom:
+            - configMapRef:
+                name: member-service-config
+            - secretRef:
+                name: member-service-secret

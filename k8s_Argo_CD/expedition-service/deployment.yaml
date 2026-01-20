@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: expedition-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: expedition-service
+  template:
+    metadata:
+      labels:
+        app: expedition-service
+    spec:
+      containers:
+        - name: expedition-service
+          image: brahimbtf/expedition-service:1.0
+          ports:
+            - containerPort: 8082
+          envFrom:
+            - configMapRef:
+                name: exp-service-config
+            - secretRef:
+                name: exp-service-secret

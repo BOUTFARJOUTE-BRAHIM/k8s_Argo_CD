@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api-gateway
+  template:
+    metadata:
+      labels:
+        app: api-gateway
+    spec:
+      containers:
+        - name: api-gateway
+          image: brahimbtf/api-gateway:1.1
+          ports:
+            - containerPort: 8080
+   #       env:
+  #          - name: EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE
+ #             value:  "http://eureka-server:8761/eureka/"
+

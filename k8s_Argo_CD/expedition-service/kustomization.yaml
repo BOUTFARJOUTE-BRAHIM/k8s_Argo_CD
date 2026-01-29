@@ -6,3 +6,5 @@ resources:
 images:
 - name: brahimbtf/expedition-service
   newTag: "1.0"
+- name: abdelilahxr/expedition-service
+  newTag: "1.0"

@@ -9,7 +9,7 @@ spec:
     - namePattern: "app-payment-service"
       images:
         - alias: "pay-service"
-          imageName: "brahimbtf/pay-service:1.x"
+          imageName: "abdelilahxr/payment-service:1.x"
           commonUpdateSettings:
             allowTags: "regexp:^1\\.[0-9]+$"
             updateStrategy: "semver"

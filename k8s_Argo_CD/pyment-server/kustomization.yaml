@@ -6,3 +6,5 @@ resources:
 images:
 - name: brahimbtf/pay-service
   newTag: "1.0"
+- name: abdelilahxr/payment-service
+  newTag: "1.0"

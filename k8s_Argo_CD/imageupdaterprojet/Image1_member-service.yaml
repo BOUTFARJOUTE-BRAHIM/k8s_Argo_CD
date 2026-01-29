@@ -9,7 +9,7 @@ spec:
     - namePattern: "app-member-service"
       images:
         - alias: "member-service"
-          imageName: "brahimbtf/member-service:1.x"
+          imageName: "abdelilahxr/member-service:1.x"
           commonUpdateSettings:
             allowTags: "regexp:^1\\.[0-9]+$"
             updateStrategy: "semver"

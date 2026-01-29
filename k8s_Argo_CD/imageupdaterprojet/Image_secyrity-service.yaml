@@ -9,7 +9,7 @@ spec:
     - namePattern: "app-security-service"
       images:
         - alias: "security-service"
-          imageName: "brahimbtf/security-service:1.x"
+          imageName: "abdelilahxr/security-service:1.x"
           commonUpdateSettings:
             allowTags: "regexp:^1\\.[0-9]+$"
             updateStrategy: "semver"

@@ -6,3 +6,5 @@ resources:
 images:
 - name: brahimbtf/security-service
   newTag: "1.1"
+- name: abdelilahxr/security-service
+  newTag: "1.0"

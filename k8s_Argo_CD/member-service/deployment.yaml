@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: member-service
-          image: brahimbtf/member-service
+          image: abdelilahxr/member-service
           ports:
             - containerPort: 8081
           envFrom:

@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: expedition-service
-          image: brahimbtf/expedition-service
+          image: abdelilahxr/expedition-service
           ports:
             - containerPort: 8082
           envFrom:

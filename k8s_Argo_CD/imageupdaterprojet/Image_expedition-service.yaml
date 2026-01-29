@@ -9,7 +9,7 @@ spec:
     - namePattern: "app-expedition-service"
       images:
         - alias: "expedition-service"
-          imageName: "brahimbtf/expedition-service:1.x"
+          imageName: "abdelilahxr/expedition-service:1.x"
           commonUpdateSettings:
             allowTags: "regexp:^1\\.[0-9]+$"
             updateStrategy: "semver"

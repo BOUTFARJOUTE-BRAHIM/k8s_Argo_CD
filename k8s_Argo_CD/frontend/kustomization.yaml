@@ -5,4 +5,4 @@ images:
 - name: brahimbtf/frontend-bus
   newTag: "1.0"
 - name: abdelilahxr/easybus-frontend
-  newTag: "1.0"
+  newTag: "1.1"

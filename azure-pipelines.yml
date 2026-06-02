@@ -1,29 +1,16 @@
-# Docker
-# Build a Docker image
-# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
-
 trigger:
 - main
 
-resources:
-- repo: self
+pool:
+  vmImage: ubuntu-latest
 
-variables:
-  tag: '$(Build.BuildId)'
+jobs:
+- job: Build
+  steps:
+  - script: echo "Bonjour Azure Pipeline"
+    displayName: "Mon premier script"
 
-stages:
-- stage: Build
-  displayName: Build image
-  jobs:
-  - job: Build
-    displayName: Build
-    pool:
-      vmImage: ubuntu-latest
-    steps:
-    - task: Docker@2
-      displayName: Build an image
-      inputs:
-        command: build
-        dockerfile: '$(Build.SourcesDirectory)/k8s_Argo_CD/api-gateway/api-gateway/Dockerfile'
-        tags: |
-          $(tag)
+  - script: |
+      echo "Compilation..."
+      echo "Fin"
+    displayName: "Build"
